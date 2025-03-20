@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="icon" type="image/png" href="./frontend/performance.png" />
+  <title>Performance Dashboard</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
+  <link rel="stylesheet" href="frontend/style.css" />
+</head>
+
+<body>
+  <!-- Dark/Light Mode Toggle -->
+  <div class="theme-toggle" onclick="toggleTheme()">
+    <i class="fas fa-moon"></i>
+  </div>
+
+  <!-- Loading Animation -->
+  <div class="loading" id="loading">Loading...</div>
+
+  <div class="container" id="dashboard" style="display: none">
+    <div class="header">Performance Audit Dashboard</div>
+
+    <!-- KPI Scorecards -->
+    <div class="metrics">
+      <div class="metric-box" onclick="scrollToAccessibilityChart()">
+        <h3>Accessibility</h3>
+        <p id="accessibility-score">Loading...</p>
+      </div>
+      <div class="metric-box" onclick="scrollToSeoChart()">
+        <h3>SEO</h3>
+        <p id="seo-score">Loading...</p>
+      </div>
+      <div class="metric-box" onclick="scrollToBestPracticeChart()">
+        <h3>Best Practices</h3>
+        <p id="best-practice-score">Loading...</p>
+      </div>
+    </div>
+
+    <!-- Filters for Performance Chart -->
+    <div class="filter-container">
+      <div>
+        <label for="deviceFilter">Filter by Device:</label>
+        <select id="deviceFilter" onchange="applyFilters()">
+          <option value="All">All</option>
+          <!-- Device options will be populated dynamically -->
+        </select>
+      </div>
+      <div>
+        <label for="performanceFilter">Filter by Performance:</label>
+        <select id="performanceFilter" onchange="applyFilters()">
+          <option value="All">All</option>
+          <option value="100-80">100-80</option>
+          <option value="79-60">79-60</option>
+          <option value="59-0">59-0</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Horizontal Bar Chart for Last 3 Runs -->
+    <div class="chart-container">
+      <h2>Performance for Last 3 Runs</h2>
+      <canvas id="horizontalBarChart"></canvas>
+    </div>
+
+    <!-- Filters for SEO Chart -->
+    <div class="filter-container">
+      <div>
+        <label for="seoDeviceFilter">Filter by Device:</label>
+        <select id="seoDeviceFilter" onchange="applySeoFilters()">
+          <option value="All">All</option>
+          <!-- Device options will be populated dynamically -->
+        </select>
+      </div>
+      <div>
+        <label for="seoFilter">Filter by SEO:</label>
+        <select id="seoFilter" onchange="applySeoFilters()">
+          <option value="All">All</option>
+          <option value="100-80">100-80</option>
+          <option value="79-60">79-60</option>
+          <option value="59-0">59-0</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Horizontal Bar Chart for SEO -->
+    <div class="chart-container">
+      <h2>SEO for Last 3 Runs</h2>
+      <canvas id="seoChart"></canvas>
+    </div>
+
+    <!-- Filters for Accessibility Chart -->
+    <div class="filter-container">
+      <div>
+        <label for="accessibilityDeviceFilter">Filter by Device:</label>
+        <select id="accessibilityDeviceFilter" onchange="applyAccessibilityFilters()">
+          <option value="All">All</option>
+          <!-- Device options will be populated dynamically -->
+        </select>
+      </div>
+      <div>
+        <label for="accessibilityFilter">Filter by Accessibility:</label>
+        <select id="accessibilityFilter" onchange="applyAccessibilityFilters()">
+          <option value="All">All</option>
+          <option value="100-80">100-80</option>
+          <option value="79-60">79-60</option>
+          <option value="59-0">59-0</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Horizontal Bar Chart for Accessibility -->
+    <div class="chart-container">
+      <h2>Accessibility for Last 3 Runs</h2>
+      <canvas id="accessibilityChart"></canvas>
+    </div>
+
+    <!-- Filters for Best Practices Chart -->
+    <div class="filter-container">
+      <div>
+        <label for="bestPracticeDeviceFilter">Filter by Device:</label>
+        <select id="bestPracticeDeviceFilter" onchange="applyBestPracticeFilters()">
+          <option value="All">All</option>
+          <!-- Device options will be populated dynamically -->
+        </select>
+      </div>
+      <div>
+        <label for="bestPracticeFilter">Filter by Best Practice:</label>
+        <select id="bestPracticeFilter" onchange="applyBestPracticeFilters()">
+          <option value="All">All</option>
+          <option value="100-80">100-80</option>
+          <option value="79-60">79-60</option>
+          <option value="59-0">59-0</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Horizontal Bar Chart for Best Practices -->
+    <div class="chart-container">
+      <h2>Best Practices for Last 3 Runs</h2>
+      <canvas id="bestPracticeChart"></canvas>
+    </div>
+
+    <!-- Bar Chart for Device Comparison -->
+    <div class="chart-container">
+      <h2>Average Performance by Device</h2>
+      <canvas id="deviceChart"></canvas>
+    </div>
+
+    <div class="chart-container">
+      <h2>All Performance Test Results
+      </h2>
+      <label style="margin-left: 10px;">
+        <input type="checkbox" id="latestRunCheckbox" onchange="toggleLatestRun()" />
+        Latest Run Result
+      </label>
+      <!-- Add this code above the table -->
+      <div class="filter-container">
+        <div>
+          <label for="tableDeviceFilter">Filter by Device:</label>
+          <select id="tableDeviceFilter" onchange="applyTableFilters()">
+            <option value="All">All</option>
+            <!-- Device options will be populated dynamically -->
+          </select>
+        </div>
+      </div>
+      <div class="table-container">
+        <table>
+          <thead>
+            <tr>
+              <th>Test Name</th>
+              <th>Device Type</th>
+              <th>Performance</th>
+              <th>Accessibility</th>
+              <th>SEO</th>
+              <th>Best Practice</th>
+              <th>Date</th>
+            </tr>
+          </thead>
+          <tbody id="data-table"></tbody>
+        </table>
+      </div>
+      <!-- Pagination -->
+      <div class="pagination" id="pagination"></div>
+    </div>
+    <footer>
+      <div class="version-details">
+       <p>Dashboard Version : 1.0.6</p>
+      </div>
+    </footer>
+
+    <script src="./frontend/script.js"></script>
+</body>
+
+</html>

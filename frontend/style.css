@@ -1,0 +1,446 @@
+/* Reset CSS*/
+*,
+*::before,
+*::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* General Styles */
+body {
+  font-family: "Poppins", sans-serif;
+  background-color: #1e1e2e;
+  color: #fff;
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden;
+  transition: background-color 0.3s, color 0.3s;
+  margin: 0 5%;
+}
+.container {
+  width: 90%;
+  margin: auto;
+  padding: 1.25rem;
+}
+
+/* Header */
+.header {
+  background: linear-gradient(135deg, #6a11cb, #2575fc);
+  padding: 30px;
+  font-size: 28px;
+  font-weight: 600;
+  border-radius: 15px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+  text-align: center;
+  margin-bottom: 30px;
+  animation: fadeIn 1s ease-in-out;
+  width: 100%;
+}
+
+/* Metrics Section */
+.metrics {
+  display: flex;
+  justify-content: space-around;
+  margin-top: 20px;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+.metric-box {
+  background: #333;
+  padding: 25px;
+  border-radius: 15px;
+  width: 22%;
+  text-align: center;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+.metric-box:hover {
+  transform: translateY(-10px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+}
+.metric-box h3 {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 500;
+  color: #fff;
+}
+.metric-box p {
+  margin: 10px 0 0;
+  font-size: 24px;
+  font-weight: 600;
+  color: #6a11cb;
+}
+
+/* Chart Containers */
+.chart-container {
+  width: 100%;
+  margin-top: 30px;
+  background: #222;
+  padding: 25px;
+  border-radius: 15px;
+  /* overflow-x:scroll; */
+  box-sizing: border-box;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+  animation: slideIn 1s ease-in-out;
+}
+.table-container {
+  width: 100%;
+  overflow-x: scroll;
+}
+.chart-container h2 {
+  margin-bottom: 20px;
+  font-size: 22px;
+  font-weight: 500;
+  color: #fff;
+}
+canvas#seoChart {
+  overflow: auto !important;
+  overflow-anchor: auto !important;
+  overflow-clip-margin: unset !important;
+}
+
+/* Filter Container */
+.filter-container {
+  margin-bottom: 20px;
+  display: flex;
+  gap: 20px;
+  align-items: center;
+  padding-top: 20px;
+}
+.filter-container label {
+  font-size: 16px;
+  margin-right: 10px;
+  margin-top: 5px;
+}
+.filter-container select {
+  padding: 8px;
+  border-radius: 5px;
+  background: #333;
+  color: #fff;
+  border: 1px solid #6a11cb;
+}
+
+canvas {
+  width: 100% !important;
+  margin: 0 auto !important;
+  height: 880px !important;
+}
+
+#deviceChart {
+  height: unset !important;
+}
+
+/* Table Styling */
+table {
+  width: 100%;
+  margin-top: 30px;
+  background: #222;
+  color: #fff;
+  border-collapse: collapse;
+  border-radius: 15px;
+  overflow: hidden;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+  animation: fadeIn 1s ease-in-out;
+}
+th,
+td {
+  padding: 15px;
+  border: 1px solid #4a148c;
+  text-align: center;
+}
+th {
+  background-color: #4a148c;
+  font-weight: 500;
+}
+tr:hover {
+  background-color: #333;
+}
+
+/* Pagination */
+.pagination {
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
+  gap: 10px;
+}
+.pagination button {
+  padding: 8px 12px;
+  border-radius: 5px;
+  background: #333;
+  color: #fff;
+  border: 1px solid #6a11cb;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+.pagination button:hover {
+  background: #444;
+}
+.pagination button.active {
+  background: #6a11cb;
+}
+
+/* Dark/Light Mode Toggle */
+.theme-toggle {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  background: #333;
+  padding: 10px;
+  border-radius: 50%;
+  cursor: pointer;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+  transition: background 0.3s;
+}
+.theme-toggle:hover {
+  background: #444;
+}
+.theme-toggle i {
+  font-size: 24px;
+  color: #fff;
+}
+
+/* Loading Animation */
+.loading {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  font-size: 24px;
+  color: #fff;
+}
+.loading::after {
+  content: "";
+  border: 4px solid #6a11cb;
+  border-top: 4px solid transparent;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  animation: spin 1s linear infinite;
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+@keyframes slideIn {
+  from {
+    transform: translateY(20px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  body {
+    margin: 0rem 0.875rem;
+  }
+  .container {
+    width: 100%;
+    padding: 0.5rem;
+  }
+  .metrics {
+    flex-direction: column;
+  }
+  .metric-box {
+    width: 100%;
+  }
+  .filter-container {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .filter-container select {
+    width: 100%;
+  }
+  canvas {
+    width: 90% !important;
+    height: 500px !important;
+  }
+  #deviceChart {
+    height: unset !important;
+  }
+}
+
+@media (max-width: 480px) {
+  body {
+    margin: 0rem 0.5rem;
+  }
+  .container {
+    width: 100%;
+    padding: 0.25rem;
+  }
+  .header {
+    width: 100%;
+    font-size: 24px;
+    padding: 20px;
+  }
+  .metric-box h3 {
+    font-size: 16px;
+  }
+  .metric-box p {
+    font-size: 20px;
+  }
+  .chart-container {
+    padding: 0.5rem;
+  }
+  .chart-container h2 {
+    font-size: 18px;
+  }
+  canvas {
+    width: 90% !important;
+  }
+}
+
+/* Light Mode Styles */
+body.light-mode {
+  background-color: #fff;
+  color: #333;
+}
+
+body.light-mode .header {
+  background: linear-gradient(135deg, #6a11cb, #2575fc);
+  color: #fff;
+}
+
+body.light-mode .metric-box {
+  background: #f4f4f4;
+  color: #333;
+}
+
+body.light-mode .metric-box h3 {
+  color: #333;
+}
+
+body.light-mode .metric-box p {
+  color: #6a11cb;
+}
+
+body.light-mode .chart-container {
+  background: #f4f4f4;
+  color: #333;
+}
+
+body.light-mode .chart-container h2 {
+  color: #333;
+}
+
+body.light-mode table {
+  background: #f4f4f4;
+  color: #333;
+}
+
+body.light-mode th,
+body.light-mode td {
+  border: 1px solid #ddd;
+}
+
+body.light-mode th {
+  background-color: #6a11cb;
+  color: #fff;
+}
+
+body.light-mode tr:hover {
+  background-color: #e0e0e0;
+}
+
+body.light-mode .pagination button {
+  background: #f4f4f4;
+  color: #333;
+  border: 1px solid #6a11cb;
+}
+
+body.light-mode .pagination button:hover {
+  background: #e0e0e0;
+}
+
+body.light-mode .pagination button.active {
+  background: #6a11cb;
+  color: #fff;
+}
+
+body.light-mode .theme-toggle {
+  background: #f4f4f4;
+}
+
+body.light-mode .theme-toggle i {
+  color: #333;
+}
+/* Add this to style.css */
+.filter-container {
+  margin-bottom: 20px;
+  display: flex;
+  gap: 20px;
+  align-items: center;
+  padding-top: 20px;
+}
+
+.filter-container label {
+  font-size: 16px;
+  margin-right: 10px;
+  margin-top: 5px;
+}
+
+.filter-container select {
+  padding: 8px;
+  border-radius: 5px;
+  background: #333;
+  color: #fff;
+  border: 1px solid #6a11cb;
+}
+
+.social-buttons {
+  display: flex;
+  justify-content: flex-end;
+  gap: 20px; /* Space between buttons */
+  padding-top: 1rem;
+}
+
+.social-button {
+  cursor: pointer;
+  padding: 7px;
+  border-radius: 35%;
+  margin: 3px;
+  background-color: #f0f0f0; /* Light gray background */
+  transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+.social-button:hover {
+  background-color: #ddd; /* Darker gray on hover */
+  transform: scale(1.1); /* Slightly enlarge on hover */
+}
+
+.social-button i {
+  font-size: 1.5rem; /* Icon size */
+  color: #333; /* Icon color */
+}
+
+/* Specific colors for each platform */
+.social-button.youtube:hover {
+  background-color: #ff0000; /* YouTube red */
+}
+
+.social-button.linkedin:hover {
+  background-color: #0077b5; /* LinkedIn blue */
+}
+
+.social-button.github:hover {
+  background-color: #333; /* GitHub black */
+}
