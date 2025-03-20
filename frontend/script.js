@@ -414,6 +414,7 @@ function updatePerformanceChart(data) {
         layout: {
           padding: {
             left: 0, // Add extra padding to prevent label cropping
+            right: 30,
           },
         },
         scales: {
