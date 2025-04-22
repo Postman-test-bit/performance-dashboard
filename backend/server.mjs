@@ -14,6 +14,30 @@ const SUPABASE_URL = process.env.SUPABASE_URL;
 const SUPABASE_TABLE_NAME = process.env.SUPABASE_TABLE_NAME;
 const SUPABASE_TOKEN = process.env.SUPABASE_TOKEN;
 
+app.post("/api/verifycredentials", async (req, res) => {
+  const { username, password } = req.body;
+
+  if (!username || !password) {
+    return res
+      .status(400)
+      .json({ error: "Username and password are required" });
+  }
+
+  if (
+    username === process.env.ADMIN_USER &&
+    password === process.env.ADMIN_PASS
+  ) {
+    return res
+      .status(200)
+      .json({ message: "Credentials are valid!", isAuthenticated: true });
+  }
+
+  // Default case: credentials are invalid
+  return res
+    .status(401)
+    .json({ error: "Invalid username or password", isAuthenticated: false });
+});
+
 // API Route to Fetch Data from Supabase
 app.get("/api/data", async (req, res) => {
   try {
