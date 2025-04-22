@@ -29,7 +29,7 @@ app.post("/api/verifycredentials", async (req, res) => {
   ) {
     return res
       .status(200)
-      .json({ message: "Credentials are valid!", isAuthenticated: true });
+      .json({ message: "Credentials are valid", isAuthenticated: true });
   }
 
   // Default case: credentials are invalid
