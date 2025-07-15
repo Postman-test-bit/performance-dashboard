@@ -64,7 +64,6 @@ function updatePagination(totalPages) {
     );
   }
 }
-
 function scrollToAccessibilityChart() {
   // Get the target element
   const targetElement = document.getElementById("accessibilityChart");
@@ -92,7 +91,6 @@ function scrollToBestPracticeChart() {
     targetElement.scrollIntoView({ behavior: "smooth" });
   }
 }
-
 // Dark/Light Mode Toggle
 function toggleTheme() {
   const body = document.body;
@@ -118,7 +116,6 @@ function toggleTheme() {
     }
   );
 }
-
 // Fetch Data and Update Dashboard
 async function fetchData() {
   try {
@@ -151,7 +148,6 @@ function populateDeviceFilter(data) {
     filter.appendChild(option);
   });
 }
-
 // Populate Device Filter Options for SEO Chart
 function populateSeoDeviceFilter(data) {
   const deviceTypes = [...new Set(data.map((d) => d.device))];
@@ -163,7 +159,6 @@ function populateSeoDeviceFilter(data) {
     filter.appendChild(option);
   });
 }
-
 // Populate Device Filter Options for Accessibility Chart
 function populateAccessibilityDeviceFilter(data) {
   const deviceTypes = [...new Set(data.map((d) => d.device))];
@@ -175,7 +170,6 @@ function populateAccessibilityDeviceFilter(data) {
     filter.appendChild(option);
   });
 }
-
 async function fetchLatestData(data) {
   const latestRunResults = await Object.values(
     data.reduce((acc, test) => {
@@ -202,7 +196,6 @@ function populateBestPracticeDeviceFilter(data) {
     filter.appendChild(option);
   });
 }
-
 // Apply Filters for Performance Chart
 function applyFilters() {
   const selectedDevice = document.getElementById("deviceFilter").value;
@@ -240,7 +233,6 @@ function applyFilters() {
   console.log("Final Filtered Data:", filteredData);
   updatePerformanceChart(filteredData);
 }
-
 // Apply Filters for SEO Chart
 function applySeoFilters() {
   const selectedDevice = document.getElementById("seoDeviceFilter").value;
@@ -272,7 +264,6 @@ function applySeoFilters() {
   console.log("Filtered Data:", filteredData);
   updateSeoChart(filteredData);
 }
-
 // Apply Filters for Accessibility Chart
 function applyAccessibilityFilters() {
   const selectedDevice = document.getElementById(
@@ -308,7 +299,6 @@ function applyAccessibilityFilters() {
   console.log("Filtered Data:", filteredData);
   updateAccessibilityChart(filteredData);
 }
-
 // Apply Filters for Best Practices Chart
 function applyBestPracticeFilters() {
   const selectedDevice = document.getElementById(
@@ -343,7 +333,6 @@ function applyBestPracticeFilters() {
   console.log("Filtered Data:", filteredData);
   updateBestPracticeChart(filteredData);
 }
-
 // Update Horizontal Bar Chart for Performance
 function updatePerformanceChart(data) {
   // Sort data by created_at in descending order (latest first)
@@ -455,7 +444,6 @@ function updatePerformanceChart(data) {
     }
   );
 }
-
 // Update Horizontal Bar Chart for SEO
 function updateSeoChart(data) {
   // Sort data by created_at in descending order (latest first)
@@ -553,7 +541,6 @@ function updateSeoChart(data) {
     plugins: [ChartDataLabels], // Enable datalabels plugin
   });
 }
-
 // Update Horizontal Bar Chart for Accessibility
 function updateAccessibilityChart(data) {
   // Sort data by created_at in descending order (latest first)
@@ -649,7 +636,6 @@ function updateAccessibilityChart(data) {
     }
   );
 }
-
 // Update Horizontal Bar Chart for Best Practices
 function updateBestPracticeChart(data) {
   // Sort data by created_at in descending order (latest first)
@@ -744,7 +730,6 @@ function updateBestPracticeChart(data) {
     plugins: [ChartDataLabels], // Enable datalabels plugin
   });
 }
-
 // Update Dashboard
 function updateDashboard(data) {
   const latestTests = {};
@@ -887,7 +872,6 @@ function updateDashboard(data) {
   // Update table with paginated data
   updateTable(data);
 }
-
 // Calculate average data for all tests
 function calculateAverageData(data) {
   const totalTests = data.length;
@@ -904,13 +888,11 @@ function calculateAverageData(data) {
 }
 
 let showLatestRunOnly = false; // Track checkbox state
-
 // Toggle latest run results
 function toggleLatestRun() {
   showLatestRunOnly = document.getElementById("latestRunCheckbox").checked;
   updateTable(allData); // Re-render the table with the updated filter
 }
-
 // Update table with paginated data
 function updateTable(data) {
   const tableBody = document.getElementById("data-table");
@@ -958,13 +940,11 @@ function updateTable(data) {
   const totalPages = Math.ceil(filteredData.length / rowsPerPage);
   updatePagination(totalPages);
 }
-
 // Format date to be more readable
 function formatDate(dateString) {
   const date = new Date(dateString);
   return date.toLocaleString(); // Adjust the format as needed
 }
-
 // Populate Device Filter Options for Table
 function populateTableDeviceFilter(data) {
   const deviceTypes = [...new Set(data.map((d) => d.device))];
@@ -976,7 +956,6 @@ function populateTableDeviceFilter(data) {
     filter.appendChild(option);
   });
 }
-
 // Apply Filters for Table
 function applyTableFilters() {
   const selectedDevice = document.getElementById("tableDeviceFilter").value;
