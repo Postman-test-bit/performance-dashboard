@@ -754,7 +754,7 @@ app.get("/api/lighthouse/stats", (req, res) => {
 
 app.get("/api/visual/data", (req, res) => {
   console.log("📊 Visual data API called");
-
+  
   if (!visualDb) {
     console.log("❌ Visual database not available");
     return res
@@ -811,9 +811,73 @@ app.get("/api/visual/data", (req, res) => {
     }
 
     console.log(
-      `📊 Visual API call completed: Retrieved ${totalRecords} total records from ${tables.length} tables`
+      `📊 Visual API call: Retrieved ${totalRecords} total records from ${tables.length} tables`
     );
-    res.json(allData);
+
+    // Remove duplicates - keep the most recent record for each unique combination
+    const uniqueData = [];
+    const seen = new Map();
+    let duplicateCount = 0;
+
+    for (const record of allData) {
+      // Create unique key excluding id and created_at
+      const { id, created_at, ...keyFields } = record;
+      const uniqueKey = JSON.stringify(keyFields);
+
+      if (!seen.has(uniqueKey)) {
+        seen.set(uniqueKey, record);
+        uniqueData.push(record);
+      } else {
+        duplicateCount++;
+        const existingRecord = seen.get(uniqueKey);
+
+        // Keep the record with the latest created_at timestamp
+        if (record.created_at && existingRecord.created_at) {
+          const recordDate = new Date(record.created_at);
+          const existingDate = new Date(existingRecord.created_at);
+
+          if (recordDate > existingDate) {
+            // Replace the existing record with the newer one
+            const existingIndex = uniqueData.findIndex((item) => {
+              const {
+                id: itemId,
+                created_at: itemCreated,
+                ...itemFields
+              } = item;
+              return JSON.stringify(itemFields) === uniqueKey;
+            });
+            if (existingIndex !== -1) {
+              uniqueData[existingIndex] = record;
+            }
+            seen.set(uniqueKey, record);
+          }
+        } else if (
+          record.id &&
+          existingRecord.id &&
+          record.id > existingRecord.id
+        ) {
+          // If no created_at, keep the record with higher ID
+          const existingIndex = uniqueData.findIndex((item) => {
+            const { id: itemId, created_at: itemCreated, ...itemFields } = item;
+            return JSON.stringify(itemFields) === uniqueKey;
+          });
+          if (existingIndex !== -1) {
+            uniqueData[existingIndex] = record;
+          }
+          seen.set(uniqueKey, record);
+        }
+      }
+    }
+
+    console.log(
+      `🔍 Duplicate removal: ${duplicateCount} duplicates removed, ${uniqueData.length} unique records remaining`
+    );
+
+    console.log(
+      `📊 Visual API call completed: ${uniqueData.length} unique records after duplicate removal`
+    );
+
+    res.json(uniqueData);
   } catch (error) {
     console.error("❌ Error querying visual database:", error);
     res
