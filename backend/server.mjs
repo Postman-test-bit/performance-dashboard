@@ -636,7 +636,7 @@ app.get("/api/health", (req, res) => {
   res.status(200).json({ status: "OK" });
 });
 
-// Authentication Endpoint (ORIGINAL - KEPT AS IS)
+// Authentication Endpoint (Updated for Two-Tier Users)
 app.post("/api/verifycredentials", async (req, res) => {
   const { username, password } = req.body;
 
@@ -646,13 +646,27 @@ app.post("/api/verifycredentials", async (req, res) => {
       .json({ error: "Username and password are required" });
   }
 
+  // Check for Admin User
   if (
     username === process.env.ADMIN_USER &&
     password === process.env.ADMIN_PASS
   ) {
-    return res
-      .status(200)
-      .json({ message: "Credentials are valid", isAuthenticated: true });
+    return res.status(200).json({
+      message: "Admin credentials are valid",
+      isAuthenticated: true,
+      role: "admin",
+      userName: username,
+    });
+  }
+
+  // Check for Normal User
+  if (username === process.env.USER && password === process.env.PASS) {
+    return res.status(200).json({
+      message: "User credentials are valid",
+      isAuthenticated: true,
+      role: "user",
+      userName: username,
+    });
   }
 
   return res
