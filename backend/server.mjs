@@ -828,22 +828,44 @@ app.get("/api/visual/data", (req, res) => {
       `📊 Visual API call: Retrieved ${totalRecords} total records from ${tables.length} tables`
     );
 
-    // Remove duplicates - keep the most recent record for each unique combination
+    // Remove duplicates based on test name - keep the most recent record for each unique test name
     const uniqueData = [];
     const seen = new Map();
     let duplicateCount = 0;
 
     for (const record of allData) {
-      // Create unique key excluding id and created_at
-      const { id, created_at, ...keyFields } = record;
-      const uniqueKey = JSON.stringify(keyFields);
+      // Create unique key based on test name (try common field names for test name)
+      const testName =
+        record.name ||
+        record.test_name ||
+        record.testName ||
+        record.scenario ||
+        record.title;
 
-      if (!seen.has(uniqueKey)) {
-        seen.set(uniqueKey, record);
+      if (!testName) {
+        console.warn(`⚠️ Record without identifiable test name found:`, record);
+        // If no test name found, use all fields as fallback (original logic)
+        const { id, created_at, ...keyFields } = record;
+        const uniqueKey = JSON.stringify(keyFields);
+
+        if (!seen.has(uniqueKey)) {
+          seen.set(uniqueKey, record);
+          uniqueData.push(record);
+        } else {
+          duplicateCount++;
+        }
+        continue;
+      }
+
+      if (!seen.has(testName)) {
+        seen.set(testName, record);
         uniqueData.push(record);
+        console.log(`✅ Added unique test: ${testName}`);
       } else {
         duplicateCount++;
-        const existingRecord = seen.get(uniqueKey);
+        const existingRecord = seen.get(testName);
+
+        console.log(`🔍 Duplicate found for test: ${testName}`);
 
         // Keep the record with the latest created_at timestamp
         if (record.created_at && existingRecord.created_at) {
@@ -851,19 +873,25 @@ app.get("/api/visual/data", (req, res) => {
           const existingDate = new Date(existingRecord.created_at);
 
           if (recordDate > existingDate) {
+            console.log(`🔄 Replacing older record for test: ${testName}`);
             // Replace the existing record with the newer one
             const existingIndex = uniqueData.findIndex((item) => {
-              const {
-                id: itemId,
-                created_at: itemCreated,
-                ...itemFields
-              } = item;
-              return JSON.stringify(itemFields) === uniqueKey;
+              const itemTestName =
+                item.name ||
+                item.test_name ||
+                item.testName ||
+                item.scenario ||
+                item.title;
+              return itemTestName === testName;
             });
             if (existingIndex !== -1) {
               uniqueData[existingIndex] = record;
             }
-            seen.set(uniqueKey, record);
+            seen.set(testName, record);
+          } else {
+            console.log(
+              `⏭️ Keeping existing newer record for test: ${testName}`
+            );
           }
         } else if (
           record.id &&
@@ -871,14 +899,24 @@ app.get("/api/visual/data", (req, res) => {
           record.id > existingRecord.id
         ) {
           // If no created_at, keep the record with higher ID
+          console.log(
+            `🔄 Replacing record with lower ID for test: ${testName}`
+          );
           const existingIndex = uniqueData.findIndex((item) => {
-            const { id: itemId, created_at: itemCreated, ...itemFields } = item;
-            return JSON.stringify(itemFields) === uniqueKey;
+            const itemTestName =
+              item.name ||
+              item.test_name ||
+              item.testName ||
+              item.scenario ||
+              item.title;
+            return itemTestName === testName;
           });
           if (existingIndex !== -1) {
             uniqueData[existingIndex] = record;
           }
-          seen.set(uniqueKey, record);
+          seen.set(testName, record);
+        } else {
+          console.log(`⏭️ Keeping existing record for test: ${testName}`);
         }
       }
     }
@@ -887,9 +925,33 @@ app.get("/api/visual/data", (req, res) => {
       `🔍 Duplicate removal: ${duplicateCount} duplicates removed, ${uniqueData.length} unique records remaining`
     );
 
+    // Sort the final result by created_at or id descending to show most recent first
+    uniqueData.sort((a, b) => {
+      if (a.created_at && b.created_at) {
+        return new Date(b.created_at) - new Date(a.created_at);
+      }
+      if (a.id && b.id) {
+        return b.id - a.id;
+      }
+      return 0;
+    });
+
     console.log(
       `📊 Visual API call completed: ${uniqueData.length} unique records after duplicate removal`
     );
+
+    // Log the unique test names for debugging
+    const uniqueTestNames = uniqueData
+      .map(
+        (record) =>
+          record.name ||
+          record.test_name ||
+          record.testName ||
+          record.scenario ||
+          record.title
+      )
+      .filter(Boolean);
+    console.log(`📝 Unique test names: ${uniqueTestNames.join(", ")}`);
 
     res.json(uniqueData);
   } catch (error) {
